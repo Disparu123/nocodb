@@ -3365,7 +3365,6 @@
     "addFieldFromFormView": "Add Field",
     "selectAllFields": "Select all fields",
     "deselectAllFields": "Deselect all fields",
-    "sheetExcludedFromImport": "Won't be imported",
     "preFilledFields": {
       "title": "Enable Pre-fill",
       "default": "Default",
