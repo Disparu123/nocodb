@@ -99,11 +99,6 @@ const isKanban = inject(IsKanbanInj, ref(false))
 
 const isPublic = inject(IsPublicInj, ref(false))
 
-// Shared bases never set IsPublicInj (isPublic stays false). Discussion mode
-// interleaves comments + audits, and audit is blocked in shared bases — so it
-// must be treated like a public view here.
-const { isSharedBase } = storeToRefs(useBase())
-
 provide(MetaInj, activeMeta)
 
 provide(
@@ -205,15 +200,10 @@ const onTemplateTableChange = async (tableId: string) => {
   }
 }
 
-const persistedViewMode =
+const activeViewMode = ref(
   !isPublic.value && appInfo.value.ee && !isNew.value && !isMobileMode.value
     ? props.view?.expanded_record_mode ?? ExpandedFormMode.FIELD
-    : ExpandedFormMode.FIELD
-
-// Discussion mode is hidden in shared bases (it interleaves blocked audit) —
-// fall back to Fields there, but keep other modes like Attachment.
-const activeViewMode = ref(
-  isSharedBase.value && persistedViewMode === ExpandedFormMode.DISCUSSION ? ExpandedFormMode.FIELD : persistedViewMode,
+    : ExpandedFormMode.FIELD,
 )
 
 watch(activeViewMode, async (v) => {
@@ -274,7 +264,6 @@ const showMobileDiscussionToggle = computed(() => {
     commentsDrawer.value &&
     isUIAllowed('commentList', baseRoles.value) &&
     !isPublic.value &&
-    !isSharedBase.value &&
     !isSqlView.value
   )
 })
